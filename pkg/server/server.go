@@ -4,18 +4,28 @@ import (
 	"io"
 	"log"
 	"net/http"
+
+	"github.com/go-chi/chi/middleware"
+	"github.com/go-chi/chi/v5"
 )
+
+type Server struct {
+	Address string
+	Router  *chi.Mux
+}
 
 type LimeHandler func(body []byte) ([]byte, error)
 
-func RunHandler(handler LimeHandler, path string, port string) {
-	go func() {
-		httpHandler := createHttpHandler(handler)
+func (s *Server) AddHandler(meth string, path string, handler LimeHandler) {
+	if s.Router == nil {
+		s.Router = chi.NewRouter()
+		s.Router.Use(middleware.Logger)
+	}
+	s.Router.MethodFunc(meth, path, createHttpHandler(handler))
+}
 
-		http.HandleFunc(path, httpHandler)
-
-		log.Fatal(http.ListenAndServe(":"+port, nil))
-	}()
+func (s *Server) Start(port string) {
+	log.Fatal(http.ListenAndServe(":"+port, s.Router))
 }
 
 func createHttpHandler(handler LimeHandler) http.HandlerFunc {

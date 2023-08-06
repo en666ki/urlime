@@ -11,26 +11,72 @@ import (
 	"testing/iotest"
 	"time"
 
+	"github.com/go-chi/chi/v5"
+	"github.com/stretchr/testify/suite"
+
 	"github.com/stretchr/testify/assert"
 )
 
-func TestRunHandler(t *testing.T) {
+type ServerSuite struct {
+	suite.Suite
+	server Server
+}
+
+func TestServer(t *testing.T) {
+	suite.Run(t, new(ServerSuite))
+}
+
+func (s *ServerSuite) TestAddHandler() {
+	tests := map[string]struct {
+		method  string
+		path    string
+		handler LimeHandler
+	}{
+		"/get": {
+			method: "GET",
+			path:   "/get",
+			handler: func(body []byte) ([]byte, error) {
+				return body, nil
+			},
+		},
+		"/post": {
+			method: "POST",
+			path:   "/post",
+			handler: func(body []byte) ([]byte, error) {
+				return nil, errors.New("error")
+			},
+		},
+	}
+
+	for _, tt := range tests {
+		s.server.AddHandler(tt.method, tt.path, tt.handler)
+		walkFunc := func(method string, route string, handler http.Handler, middlewares ...func(http.Handler) http.Handler) error {
+			route = strings.ReplaceAll(route, "/*/", "/")
+			s.Equal(tests[route].path, route)
+			s.Equal(tests[route].method, method)
+			return nil
+		}
+		err := chi.Walk(s.server.Router, walkFunc)
+		s.NoError(err)
+	}
+}
+
+func (s *ServerSuite) TestRunHandler() {
+	var server Server
 	mockEchoHandler := func(body []byte) ([]byte, error) {
 		return body, nil
 	}
 
-	RunHandler(mockEchoHandler, "/", "8080")
+	server.AddHandler("GET", "/", mockEchoHandler)
+	go server.Start("8080")
 
 	time.Sleep(100 * time.Millisecond)
 
 	rr, err := http.Get("http://localhost:8080")
-	if err != nil {
-		t.Fatalf("Failed to make GET request: %v", err)
-	}
-
+	s.NoError(err, "GET request")
 	defer rr.Body.Close()
 
-	assert.Equal(t, http.StatusOK, rr.StatusCode, "Check 200")
+	s.Equal(http.StatusOK, rr.StatusCode, "Check 200")
 }
 
 func TestEchoServer(t *testing.T) {
@@ -81,7 +127,7 @@ func TestBrokenServ(t *testing.T) {
 	if err != nil {
 		t.Fatalf("Failed to read response: %v", err)
 	}
-	assert.Equal(t, http.StatusText(http.StatusInternalServerError) + "\n", string(gotBody), "Check body")
+	assert.Equal(t, http.StatusText(http.StatusInternalServerError)+"\n", string(gotBody), "Check body")
 }
 
 func TestCreateHttpHandler(t *testing.T) {
