@@ -60,7 +60,7 @@
         "go.lintOnSave": "package",
         "editor.formatOnSave": true,
         "go.toolsEnvVars": {
-            "CGO_ENABLED": "0"
+            "CGO_ENABLED": "1"
         },
         "go.testEnvVars": {
             "": "",
@@ -75,4 +75,3 @@
         "go.coverOnTestPackage": true
     }
 }
-
