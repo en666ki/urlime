@@ -26,6 +26,10 @@ func TestServer(t *testing.T) {
 	suite.Run(t, new(ServerSuite))
 }
 
+func (s *ServerSuite) TestNoRouter() {
+	s.Error(s.server.Start("8080"), "Runinng server w/o router")
+}
+
 func (s *ServerSuite) TestAddHandler() {
 	tests := map[string]struct {
 		method  string
@@ -59,6 +63,7 @@ func (s *ServerSuite) TestAddHandler() {
 		err := chi.Walk(s.server.router, walkFunc)
 		s.NoError(err)
 	}
+	s.server.router = nil
 }
 
 func (s *ServerSuite) TestRunHandler() {
@@ -105,7 +110,7 @@ func TestEchoServer(t *testing.T) {
 	assert.Equal(t, message, string(body), "Check echo server")
 }
 
-func TestBrokenServ(t *testing.T) {
+func TestBrokenServer(t *testing.T) {
 	mockBrokenHandler := createHttpHandler(func(body []byte) ([]byte, error) {
 		return nil, errors.New("Oops! The server gremlins struck again")
 	})
@@ -160,7 +165,7 @@ func TestCreateHttpHandler(t *testing.T) {
 			thenBody:    http.StatusText(http.StatusInternalServerError) + "\n",
 		},
 		{
-			name: "Success echo handelr",
+			name: "Reader failure echo handelr",
 			path: "/echo",
 			givenHandler: func(body []byte) ([]byte, error) {
 				return body, nil

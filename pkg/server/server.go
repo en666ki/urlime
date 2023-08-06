@@ -1,6 +1,7 @@
 package server
 
 import (
+	"errors"
 	"io"
 	"log"
 	"net/http"
@@ -22,11 +23,11 @@ func (s *Server) AddHandler(meth string, path string, handler LimeHandler) {
 	s.router.MethodFunc(meth, path, createHttpHandler(handler))
 }
 
-func (s *Server) Start(port string) {
+func (s *Server) Start(port string) error {
 	if s.router == nil {
-		log.Fatalln("Error, no router inited")
+		return errors.New("error, router is nil")
 	}
-	log.Fatal(http.ListenAndServe(":"+port, s.router))
+	return http.ListenAndServe(":"+port, s.router)
 }
 
 func createHttpHandler(handler LimeHandler) http.HandlerFunc {
@@ -48,7 +49,7 @@ func createHttpHandler(handler LimeHandler) http.HandlerFunc {
 		_, err = w.Write(response)
 		if err != nil {
 			log.Printf("Failed to write HTTP response: %v", err)
-			http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
+			http.Error(w, http.StatusText(http.StatusBadRequest), http.StatusBadRequest)
 		}
 	}
 }
