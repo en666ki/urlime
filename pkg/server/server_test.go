@@ -146,7 +146,7 @@ func TestCreateHttpHandler(t *testing.T) {
 	}{
 		{
 			name: "Success echo handelr",
-			path: "/echo",
+			path: "/echo_s",
 			givenHandler: func(body []byte) ([]byte, error) {
 				return body, nil
 			},
@@ -156,7 +156,7 @@ func TestCreateHttpHandler(t *testing.T) {
 		},
 		{
 			name: "Failure echo handelr",
-			path: "/echo",
+			path: "/echo_ise",
 			givenHandler: func(body []byte) ([]byte, error) {
 				return nil, errors.New("Gremlins were in handler")
 			},
@@ -166,7 +166,7 @@ func TestCreateHttpHandler(t *testing.T) {
 		},
 		{
 			name: "Reader failure echo handelr",
-			path: "/echo",
+			path: "/echo_br",
 			givenHandler: func(body []byte) ([]byte, error) {
 				return body, nil
 			},
