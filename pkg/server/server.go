@@ -49,7 +49,7 @@ func createHttpHandler(handler LimeHandler) http.HandlerFunc {
 		_, err = w.Write(response)
 		if err != nil {
 			log.Printf("Failed to write HTTP response: %v", err)
-			http.Error(w, http.StatusText(http.StatusBadRequest), http.StatusBadRequest)
+			http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
 		}
 	}
 }
