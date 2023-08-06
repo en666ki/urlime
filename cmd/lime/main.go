@@ -1,9 +1,13 @@
 package main
 
 import (
-	"log"
+	"github.com/en666ki/urlime/pkg/server"
 )
 
 func main() {
-	log.Println("Stubbed")
+	var s server.Server
+	s.AddHandler("POST", "/test", func(body []byte) ([]byte, error) {
+		return body, nil
+	})
+	s.Start("8080")
 }

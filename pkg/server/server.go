@@ -5,27 +5,28 @@ import (
 	"log"
 	"net/http"
 
-	"github.com/go-chi/chi/middleware"
 	"github.com/go-chi/chi/v5"
 )
 
 type Server struct {
 	Address string
-	Router  *chi.Mux
+	router  *chi.Mux
 }
 
 type LimeHandler func(body []byte) ([]byte, error)
 
 func (s *Server) AddHandler(meth string, path string, handler LimeHandler) {
-	if s.Router == nil {
-		s.Router = chi.NewRouter()
-		s.Router.Use(middleware.Logger)
+	if s.router == nil {
+		s.router = chi.NewRouter()
 	}
-	s.Router.MethodFunc(meth, path, createHttpHandler(handler))
+	s.router.MethodFunc(meth, path, createHttpHandler(handler))
 }
 
 func (s *Server) Start(port string) {
-	log.Fatal(http.ListenAndServe(":"+port, s.Router))
+	if s.router == nil {
+		log.Fatalln("Error, no router inited")
+	}
+	log.Fatal(http.ListenAndServe(":"+port, s.router))
 }
 
 func createHttpHandler(handler LimeHandler) http.HandlerFunc {

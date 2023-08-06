@@ -56,7 +56,7 @@ func (s *ServerSuite) TestAddHandler() {
 			s.Equal(tests[route].method, method)
 			return nil
 		}
-		err := chi.Walk(s.server.Router, walkFunc)
+		err := chi.Walk(s.server.router, walkFunc)
 		s.NoError(err)
 	}
 }
