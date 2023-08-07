@@ -6,6 +6,7 @@ import (
 	"log"
 	"net/http"
 
+	"github.com/go-chi/chi/middleware"
 	"github.com/go-chi/chi/v5"
 )
 
@@ -14,11 +15,12 @@ type Server struct {
 	router  *chi.Mux
 }
 
-type LimeHandler func(body []byte) ([]byte, error)
+type LimeHandler func(body []byte) ([]byte, int, error)
 
 func (s *Server) AddHandler(meth string, path string, handler LimeHandler) {
 	if s.router == nil {
 		s.router = chi.NewRouter()
+		s.router.Use(middleware.Logger)
 	}
 	s.router.MethodFunc(meth, path, createHttpHandler(handler))
 }
@@ -40,10 +42,13 @@ func createHttpHandler(handler LimeHandler) http.HandlerFunc {
 			http.Error(w, http.StatusText(http.StatusBadRequest), http.StatusBadRequest)
 		}
 
-		response, err := handler(body)
+		response, code, err := handler(body)
 		if err != nil {
+			if code == 0 {
+				code = http.StatusInternalServerError
+			}
 			log.Printf("Failed to process HTTP request: %v", err)
-			http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
+			http.Error(w, http.StatusText(code), code)
 		}
 
 		_, err = w.Write(response)
