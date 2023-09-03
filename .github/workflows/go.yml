@@ -19,7 +19,6 @@ jobs:
         uses: reugn/github-action-aerospike@v1.1.0
         with:
           port: 3000
-          config-file: "./aerospike.conf"
 
       - name: Set up Go
         uses: actions/setup-go@v4
