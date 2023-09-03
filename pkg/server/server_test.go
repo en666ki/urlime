@@ -39,14 +39,14 @@ func (s *ServerSuite) TestAddHandler() {
 		"/get": {
 			method: "GET",
 			path:   "/get",
-			handler: func(body []byte) ([]byte, int, error) {
-				return body, http.StatusOK, nil
+			handler: func(r *http.Request) ([]byte, int, error) {
+				return []byte{}, http.StatusOK, nil
 			},
 		},
 		"/post": {
 			method: "POST",
 			path:   "/post",
-			handler: func(body []byte) ([]byte, int, error) {
+			handler: func(r *http.Request) ([]byte, int, error) {
 				return nil, 0, errors.New("error")
 			},
 		},
@@ -68,7 +68,11 @@ func (s *ServerSuite) TestAddHandler() {
 
 func (s *ServerSuite) TestRunHandler() {
 	var server Server
-	mockEchoHandler := func(body []byte) ([]byte, int, error) {
+	mockEchoHandler := func(r *http.Request) ([]byte, int, error) {
+		body, err := io.ReadAll(r.Body)
+		if err != nil {
+			return nil, http.StatusInternalServerError, err
+		}
 		return body, http.StatusOK, nil
 	}
 
@@ -85,7 +89,11 @@ func (s *ServerSuite) TestRunHandler() {
 }
 
 func TestEchoServer(t *testing.T) {
-	mockEchoHandler := createHttpHandler(func(body []byte) ([]byte, int, error) {
+	mockEchoHandler := createHttpHandler(func(r *http.Request) ([]byte, int, error) {
+		body, err := io.ReadAll(r.Body)
+		if err != nil {
+			return nil, http.StatusInternalServerError, err
+		}
 		return body, http.StatusOK, nil
 	})
 
@@ -111,7 +119,7 @@ func TestEchoServer(t *testing.T) {
 }
 
 func TestBrokenServer(t *testing.T) {
-	mockBrokenHandler := createHttpHandler(func(body []byte) ([]byte, int, error) {
+	mockBrokenHandler := createHttpHandler(func(r *http.Request) ([]byte, int, error) {
 		return nil, 0, errors.New("Oops! The server gremlins struck again")
 	})
 
@@ -147,7 +155,11 @@ func TestCreateHttpHandler(t *testing.T) {
 		{
 			name: "Success echo handelr",
 			path: "/echo_s",
-			givenHandler: func(body []byte) ([]byte, int, error) {
+			givenHandler: func(r *http.Request) ([]byte, int, error) {
+				body, err := io.ReadAll(r.Body)
+				if err != nil {
+					return nil, http.StatusInternalServerError, err
+				}
 				return body, http.StatusOK, nil
 			},
 			givenReader: strings.NewReader("Ping"),
@@ -157,7 +169,7 @@ func TestCreateHttpHandler(t *testing.T) {
 		{
 			name: "Failure echo handelr",
 			path: "/echo_ise",
-			givenHandler: func(body []byte) ([]byte, int, error) {
+			givenHandler: func(r *http.Request) ([]byte, int, error) {
 				return nil, 0, errors.New("Gremlins were in handler")
 			},
 			givenReader: strings.NewReader("Ping"),
@@ -167,7 +179,11 @@ func TestCreateHttpHandler(t *testing.T) {
 		{
 			name: "Reader failure echo handelr",
 			path: "/echo_br",
-			givenHandler: func(body []byte) ([]byte, int, error) {
+			givenHandler: func(r *http.Request) ([]byte, int, error) {
+				body, err := io.ReadAll(r.Body)
+				if err != nil {
+					return nil, http.StatusBadRequest, err
+				}
 				return body, 0, nil
 			},
 			givenReader: iotest.ErrReader(errors.New("Gremlins broke request")),

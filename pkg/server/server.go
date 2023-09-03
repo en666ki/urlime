@@ -2,7 +2,6 @@ package server
 
 import (
 	"errors"
-	"io"
 	"log"
 	"net/http"
 
@@ -15,7 +14,7 @@ type Server struct {
 	router  *chi.Mux
 }
 
-type LimeHandler func(body []byte) ([]byte, int, error)
+type LimeHandler func(r *http.Request) ([]byte, int, error)
 
 func (s *Server) AddHandler(meth string, path string, handler LimeHandler) {
 	if s.router == nil {
@@ -36,13 +35,7 @@ func createHttpHandler(handler LimeHandler) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		defer r.Body.Close()
 
-		body, err := io.ReadAll(r.Body)
-		if err != nil {
-			log.Printf("Failed to parse HTTP request: %v", err)
-			http.Error(w, http.StatusText(http.StatusBadRequest), http.StatusBadRequest)
-		}
-
-		response, code, err := handler(body)
+		response, code, err := handler(r)
 		if err != nil {
 			if code == 0 {
 				code = http.StatusInternalServerError

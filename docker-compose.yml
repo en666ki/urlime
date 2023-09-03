@@ -1,10 +1,21 @@
 version: "3.7"
 
 services:
+  aerospike:
+    image: aerospike/aerospike-server
+    restart: always
+    volumes:
+      - ./:/workspace
+    ports:
+      - "3000:3000" # Client connections
+      - "3001:3001" # Mesh heartbeats
+      - "3002:3002" # Fabric
+      - "3003:3003" # Info
+
   vscode:
     build: .
     volumes:
-      - ../:/workspace
+      - ./:/workspace
       # Docker
       - ~/.docker:/root/.docker:z
       # Docker socket to access Docker server
@@ -21,7 +32,7 @@ services:
       # Kubernetes
       - ~/.kube:/root/.kube:z
     environment:
-      - TZ=
+      - TZ=Armenia/Yerevan
     cap_add:
       # For debugging with dlv
       - SYS_PTRACE
@@ -29,3 +40,5 @@ services:
       # For debugging with dlv
       - seccomp:unconfined
     entrypoint: [ "zsh", "-c", "while sleep 1000; do :; done" ]
+    links:
+      - aerospike
