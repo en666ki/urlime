@@ -77,7 +77,7 @@ func getShorten(url string) string {
 }
 
 func writeShorten(surl, url string) error {
-	urlToWrite := db.NewUrl(surl, url, aerospike.New("aerospike", 3000, "test", "url"))
+	urlToWrite := db.NewUrl(surl, url, aerospike.New("aerospike", 3000, "urlime_test", "url"))
 	err := urlToWrite.Put()
 	if err != nil {
 		return err
@@ -86,7 +86,7 @@ func writeShorten(surl, url string) error {
 }
 
 func readUrl(surl string) (string, error) {
-	url := db.NewUrl(surl, "", aerospike.New("aerospike", 3000, "test", "url"))
+	url := db.NewUrl(surl, "", aerospike.New("aerospike", 3000, "urlime_test", "url"))
 	_, err := url.Get()
 	if err != nil {
 		return "", err

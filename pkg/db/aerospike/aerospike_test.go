@@ -17,7 +17,7 @@ func TestAerospike(t *testing.T) {
 }
 
 func (s *AerospikeTestSuite) SetupTest() {
-	a := New("aerospike", 3000, "test", "url")
+	a := New("aerospike", 3000, "urlime_test", "url")
 	s.NotNil(a)
 	s.a = a
 }

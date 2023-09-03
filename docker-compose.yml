@@ -6,6 +6,7 @@ services:
     restart: always
     volumes:
       - ./:/workspace
+    command: [ "--config-file","/workspace/aerospike.conf"]
     ports:
       - "3000:3000" # Client connections
       - "3001:3001" # Mesh heartbeats

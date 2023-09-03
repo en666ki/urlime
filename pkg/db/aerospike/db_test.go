@@ -17,7 +17,7 @@ func TestDBAerospike(t *testing.T) {
 }
 
 func (s *DBAerospikeTestSuite) SetupTest() {
-	s.db = New("aerospike", 3000, "test", "url")
+	s.db = New("aerospike", 3000, "urlime_test", "url")
 }
 
 func (s *DBAerospikeTestSuite) TestPut() {

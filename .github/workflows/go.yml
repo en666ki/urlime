@@ -15,6 +15,12 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
+      - name: Set up Aerospike Database
+        uses: reugn/github-action-aerospike@v1
+        with:
+          port: 3000
+          config-file: "./aerospike.conf"
+
       - name: Set up Go
         uses: actions/setup-go@v4
         with:
