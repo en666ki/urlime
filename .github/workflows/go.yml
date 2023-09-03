@@ -24,7 +24,7 @@ jobs:
         run: go build -v ./...
 
       - name: Set up Aerospike Database
-        uses: reugn/github-action-aerospike@v1
+        uses: reugn/github-action-aerospike@v1.1.0
         with:
           port: 3000
           config-file: "./aerospike.conf"
