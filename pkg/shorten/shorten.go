@@ -49,7 +49,7 @@ func Shorten(r *http.Request) ([]byte, int, error) {
 	log.Printf("url: \"%s\"", url)
 
 	surl := getShorten(strings.TrimSpace(url))[:8]
-	err := writeShorten(surl, url)
+	err = writeShorten(surl, url)
 	if err != nil {
 		return []byte{}, http.StatusInternalServerError, err
 	}
