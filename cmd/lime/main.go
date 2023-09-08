@@ -2,19 +2,16 @@ package main
 
 import (
 	"log"
+	"net/http"
 
-	"github.com/en666ki/urlime/internal/page"
-	"github.com/en666ki/urlime/internal/server"
-	"github.com/en666ki/urlime/internal/shorten"
+	"github.com/en666ki/urlime/internal/routers"
 )
 
 func main() {
-	var s server.Server
-	s.AddHandler("GET", "/", page.Main)
-	s.AddHandler("POST", "/shorten", shorten.Shorten)
-	s.AddHandler("POST", "/unshort", shorten.Unshort)
-	err := s.Start("8080")
+	shortenRouter, err := routers.ShortenRouter().InitRouter()
 	if err != nil {
-		log.Fatalf("Server was crushed with error: %v", err)
+		log.Println(err)
+		return
 	}
+	http.ListenAndServe(":8080", shortenRouter)
 }

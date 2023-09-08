@@ -6,7 +6,7 @@
     "service": "vscode",
     "runServices": [
         "vscode",
-        "aerospike"
+        "postgres_test"
     ],
     "shutdownAction": "stopCompose",
     "postCreateCommand": "go mod download && go mod tidy",
