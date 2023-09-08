@@ -9,8 +9,8 @@ import (
 	"strings"
 	"unicode/utf8"
 
-	"github.com/en666ki/urlime/pkg/db"
-	"github.com/en666ki/urlime/pkg/db/aerospike"
+	"github.com/en666ki/urlime/internal/db"
+	"github.com/en666ki/urlime/internal/db/aerospike"
 )
 
 func Unshort(r *http.Request) ([]byte, int, error) {

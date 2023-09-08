@@ -3,7 +3,7 @@ package aerospike
 import (
 	"testing"
 
-	"github.com/en666ki/urlime/pkg/db"
+	"github.com/en666ki/urlime/internal/db"
 	"github.com/stretchr/testify/suite"
 )
 

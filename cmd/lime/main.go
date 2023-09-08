@@ -3,9 +3,9 @@ package main
 import (
 	"log"
 
-	"github.com/en666ki/urlime/pkg/page"
-	"github.com/en666ki/urlime/pkg/server"
-	"github.com/en666ki/urlime/pkg/shorten"
+	"github.com/en666ki/urlime/internal/page"
+	"github.com/en666ki/urlime/internal/server"
+	"github.com/en666ki/urlime/internal/shorten"
 )
 
 func main() {

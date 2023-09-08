@@ -4,7 +4,7 @@ import (
 	"errors"
 
 	as "github.com/aerospike/aerospike-client-go"
-	"github.com/en666ki/urlime/pkg/db"
+	"github.com/en666ki/urlime/internal/db"
 )
 
 type AerospikeDB struct {
