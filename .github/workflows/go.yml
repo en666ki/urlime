@@ -12,14 +12,25 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres
+
+        env:
+          POSTGRES_USER: local
+          POSTGRES_PASSWORD: local_pwd
+          POSTGRES_DB: local_short
+          POSTGRES_PORT: 5432
+
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - 5432:5432
     steps:
       - uses: actions/checkout@v3
-
-      - name: Set up Aerospike Database
-        uses: reugn/github-action-aerospike@v1
-        with:
-          config-file: "./aerospike.conf"
-          port: 3000
 
       - name: Set up Go
         uses: actions/setup-go@v4
