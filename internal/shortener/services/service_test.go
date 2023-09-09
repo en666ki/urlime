@@ -17,7 +17,7 @@ func TestStoreShortenUrl(t *testing.T) {
 
 	urlRepository.On("PutUrl", utils.Shorten("testurl"), "testurl").Return(nil)
 
-	urlService := New(urlRepository, config.TestConfig())
+	urlService := New(urlRepository, config.MustLoad())
 
 	expectedUrl := viewmodels.UrlVM{utils.Shorten("testurl"), "testurl"}
 
@@ -31,7 +31,7 @@ func TestReadUrl(t *testing.T) {
 
 	urlRepository.On("GetUrl", utils.Shorten("testurl")).Return(models.Url{123, utils.Shorten("testurl"), "testurl"}, nil)
 
-	urlService := New(urlRepository, config.TestConfig())
+	urlService := New(urlRepository, config.MustLoad())
 
 	expectedUrl := models.Url{123, utils.Shorten("testurl"), "testurl"}
 

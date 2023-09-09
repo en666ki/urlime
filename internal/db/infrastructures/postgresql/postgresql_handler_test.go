@@ -21,7 +21,7 @@ func TestPostgresqlHandler(t *testing.T) {
 }
 
 func (s *PostgresqlHandlerSuite) SetupTest() {
-	s.cfg = config.TestConfig()
+	s.cfg = config.MustLoad()
 	sqlConn, err := sql.Open(s.cfg.DB.Driver,
 		fmt.Sprintf("host=%s port=%d dbname=%s user=%s password=%s sslmode=%s",
 			s.cfg.DB.Host, s.cfg.DB.Port, s.cfg.DB.Name, s.cfg.DB.User, s.cfg.DB.Password, s.cfg.DB.SslMode))

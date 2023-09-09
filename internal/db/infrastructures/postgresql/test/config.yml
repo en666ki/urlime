@@ -1,0 +1,17 @@
+env: local
+server:
+  host: "localhost:"
+  port: "8080"
+db:
+  db: "postgres"
+  driver: "postgres"
+  host: "postgres_test"
+  name: "local"
+  port: 5432
+  table: "urls"
+  user: "local"
+  password: "local_pwd"
+api:
+  params:
+    shorten: "url"
+    unshort: "surl"

@@ -18,7 +18,7 @@ func TestShorten(t *testing.T) {
 
 	urlService.On("StoreShortenUrl", "testurl").Return(viewmodels.UrlVM{"testsurl", "testurl"}, nil)
 
-	urlController := New(urlService, config.TestConfig())
+	urlController := New(urlService, config.MustLoad())
 	req := httptest.NewRequest("GET", "http://localhost:8080/shorten/testurl", nil)
 	w := httptest.NewRecorder()
 
@@ -44,7 +44,7 @@ func TestUnshort(t *testing.T) {
 
 	urlService.On("ReadUrl", "testsurl").Return(models.Url{123, "testsurl", "testurl"}, nil)
 
-	urlController := New(urlService, config.TestConfig())
+	urlController := New(urlService, config.MustLoad())
 	req := httptest.NewRequest("GET", "http://localhost:8080/unshort/testsurl", nil)
 	w := httptest.NewRecorder()
 

@@ -64,7 +64,7 @@
             "CGO_ENABLED": "1"
         },
         "go.testEnvVars": {
-            "": "",
+            "CONFIG_PATH": "test/config.yml"
         },
         "go.testFlags": [
             "-v",
