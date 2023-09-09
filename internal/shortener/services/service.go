@@ -1,11 +1,9 @@
 package services
 
 import (
-	"crypto/md5"
-	"fmt"
-
 	"github.com/en666ki/urlime/internal/shortener/interfaces"
 	"github.com/en666ki/urlime/internal/shortener/models"
+	"github.com/en666ki/urlime/internal/shortener/utils"
 	"github.com/en666ki/urlime/internal/shortener/viewmodels"
 )
 
@@ -14,7 +12,8 @@ type UrlService struct {
 }
 
 func (s *UrlService) StoreShortenUrl(url string) (viewmodels.UrlVM, error) {
-	surl := shorten(url)
+
+	surl := utils.Shorten(url)
 	err := s.PutUrl(surl, url)
 	if err != nil {
 		return viewmodels.UrlVM{}, err
@@ -28,13 +27,4 @@ func (s *UrlService) ReadUrl(surl string) (models.Url, error) {
 		return models.Url{}, err
 	}
 	return url, nil
-}
-
-func shorten(url string) string {
-	sum := md5.Sum([]byte(url))
-	var s [md5.Size]byte
-	for i, b := range sum {
-		s[i] = fmt.Sprintf("%x", b)[0]
-	}
-	return string(s[:8])
 }

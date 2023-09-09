@@ -1,4 +1,4 @@
-package infrastructures
+package postgresql
 
 import (
 	"database/sql"

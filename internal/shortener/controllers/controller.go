@@ -14,6 +14,10 @@ type UrlController struct {
 	interfaces.IUrlService
 }
 
+func New(service interfaces.IUrlService) *UrlController {
+	return &UrlController{service}
+}
+
 func (c *UrlController) Shorten(res http.ResponseWriter, req *http.Request) {
 	url := chi.URLParam(req, "url")
 

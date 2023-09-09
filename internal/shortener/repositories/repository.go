@@ -11,6 +11,10 @@ type UrlRepository struct {
 	db.IDHandler
 }
 
+func New(h db.IDHandler) *UrlRepository {
+	return &UrlRepository{h}
+}
+
 func (r *UrlRepository) PutUrl(surl, url string) error {
 	_, err := r.Execute(fmt.Sprintf("INSERT INTO %s (surl, url) VALUES ('%s', '%s')", "local_urls", surl, url))
 	if err != nil {

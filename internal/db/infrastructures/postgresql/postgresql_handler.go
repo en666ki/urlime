@@ -1,4 +1,4 @@
-package infrastructures
+package postgresql
 
 import (
 	"database/sql"
@@ -8,6 +8,10 @@ import (
 
 type PostgresqlHandler struct {
 	Conn *sql.DB
+}
+
+func New(conn *sql.DB) *PostgresqlHandler {
+	return &PostgresqlHandler{conn}
 }
 
 func (handler *PostgresqlHandler) Execute(statement string) (db.IResult, error) {

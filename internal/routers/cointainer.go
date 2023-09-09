@@ -4,7 +4,7 @@ import (
 	"database/sql"
 	"sync"
 
-	"github.com/en666ki/urlime/internal/db/infrastructures"
+	"github.com/en666ki/urlime/internal/db/infrastructures/postgresql"
 	"github.com/en666ki/urlime/internal/shortener/controllers"
 	"github.com/en666ki/urlime/internal/shortener/repositories"
 	"github.com/en666ki/urlime/internal/shortener/services"
@@ -23,10 +23,9 @@ func (kernel *kernel) InjectUrlController() (controllers.UrlController, error) {
 	if err != nil {
 		return controllers.UrlController{}, err
 	}
-	postgresqlHandler := &infrastructures.PostgresqlHandler{}
-	postgresqlHandler.Conn = sqlConn
+	postgresqlHandler := postgresql.New(sqlConn)
 
-	urlRepository := &repositories.UrlRepository{postgresqlHandler}
+	urlRepository := repositories.New(postgresqlHandler)
 	urlService := &services.UrlService{urlRepository}
 	urlController := controllers.UrlController{urlService}
 
