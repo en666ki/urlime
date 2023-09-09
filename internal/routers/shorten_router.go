@@ -3,17 +3,18 @@ package routers
 import (
 	"sync"
 
+	"github.com/en666ki/urlime/internal/config"
 	"github.com/go-chi/chi"
 	"github.com/go-chi/chi/middleware"
 )
 
 type IShortenRouter interface {
-	InitRouter() (*chi.Mux, error)
+	InitRouter(cfg *config.Config) (*chi.Mux, error)
 }
 
 type router struct{}
 
-func (router *router) InitRouter() (*chi.Mux, error) {
+func (router *router) InitRouter(cfg *config.Config) (*chi.Mux, error) {
 	urlController, err := ServiceContainer().InjectUrlController()
 	if err != nil {
 		return nil, err

@@ -1,0 +1,11 @@
+env: local
+server:
+  host: "localhost"
+  port: 8080
+db:
+  db: "postgres"
+  driver: "postgresql"
+  host: "postgres"
+  name: "local"
+  port: "5432"
+  table: "local_urls"

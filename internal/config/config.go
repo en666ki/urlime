@@ -1,0 +1,50 @@
+package config
+
+import (
+	"log"
+	"os"
+	"time"
+
+	"github.com/ilyakaznacheev/cleanenv"
+)
+
+type Config struct {
+	Env    string `yaml:"env" env-required`
+	Server `yaml:"server" env-required`
+	DB     `yaml:"db" env-required`
+}
+
+type Server struct {
+	Host        string        `yaml:"host" env-required`
+	Port        int           `yaml:"port" env-required`
+	Timeout     time.Duration `yaml:"timeout" env-default:"4s"`
+	IdleTimeout time.Duration `yaml:"timeout" env-default:"60s"`
+}
+
+type DB struct {
+	Driver string `yaml:"driver" env-requires`
+	DB     string `yaml:"db" env-required`
+	Host   string `yaml:"host" env-required`
+	Name   string `yaml:"name" env-required`
+	Port   int    `yaml:"port" env-required`
+	Table  string `yaml:"table" env-required`
+}
+
+func MustLoad() Config {
+	configPath := os.Getenv("CONFIG_PATH")
+	if configPath == "" {
+		log.Fatal("[ERROR] CONFIG_PATH is not set")
+	}
+	if _, err := os.Stat(configPath); os.IsNotExist(err) {
+		log.Fatalf("[ERROR] No such config: %s", configPath)
+	}
+
+	var cfg Config
+
+	err := cleanenv.ReadConfig(configPath, &cfg)
+	if err != nil {
+		log.Fatalf("[ERROR] Cannot read config: %v", err)
+	}
+
+	return cfg
+}

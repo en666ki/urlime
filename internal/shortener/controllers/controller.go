@@ -1,4 +1,4 @@
-package url
+package controllers
 
 import (
 	"encoding/json"
@@ -9,7 +9,6 @@ import (
 )
 
 type UrlController struct {
-	IUrl
 }
 
 func (c *UrlController) Shorten(res http.ResponseWriter, req *http.Request) {
