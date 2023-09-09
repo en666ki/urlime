@@ -1,4 +1,4 @@
-module github.com/en666ki/urlime/shortener
+module github.com/en666ki/internal/urlime/shortener
 
 go 1.21.0
 

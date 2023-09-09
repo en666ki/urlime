@@ -5,9 +5,9 @@ import (
 	"sync"
 
 	"github.com/en666ki/urlime/internal/db/infrastructures"
-	"github.com/en666ki/urlime/internal/shortener/controllers"
 	"github.com/en666ki/urlime/internal/shortener/repositories"
 	"github.com/en666ki/urlime/internal/shortener/services"
+	"github.com/en666ki/urlime/internal/shortener/controllers"
 	_ "github.com/lib/pq"
 )
 
