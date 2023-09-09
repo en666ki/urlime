@@ -35,12 +35,12 @@ func (s *PostgresqlHandlerSuite) TearDownTest() {
 
 func (s *PostgresqlHandlerSuite) TestExecute() {
 	result, err := s.handler.Execute(`
-		CALL test_proc();
+		INSERT INTO local_urls (surl, url) VALUES ('tst_exec', 'test_exec');
 	`)
 	s.NoError(err)
 	ra, err := result.RowsAffected()
 	s.NoError(err)
-	s.Equal(int64(0), ra)
+	s.Equal(int64(1), ra)
 }
 
 func (s *PostgresqlHandlerSuite) TestQuery() {
