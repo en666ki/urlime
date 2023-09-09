@@ -23,7 +23,7 @@ jobs:
           POSTGRES_PORT: 5432
 
         volumes:
-          - ./sql/:/docker-entrypoint-initdb.d
+          - ./init/:/docker-entrypoint-initdb.d
 
         options: >-
           --health-cmd pg_isready
