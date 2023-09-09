@@ -15,7 +15,7 @@ type UrlController struct {
 }
 
 func (c *UrlController) Shorten(res http.ResponseWriter, req *http.Request) {
-	url := chi.URLParam(req, "urlParam")
+	url := chi.URLParam(req, "url")
 
 	log.Println(req.URL)
 	log.Println(url)
@@ -28,7 +28,7 @@ func (c *UrlController) Shorten(res http.ResponseWriter, req *http.Request) {
 }
 
 func (c *UrlController) Unshort(res http.ResponseWriter, req *http.Request) {
-	surl := chi.URLParam(req, "surlParam")
+	surl := chi.URLParam(req, "surl")
 
 	url, err := c.ReadUrl(surl)
 	if err != nil {

@@ -8,7 +8,7 @@ import (
 	"github.com/en666ki/urlime/internal/shortener/interfaces/mocks"
 	"github.com/en666ki/urlime/internal/shortener/models"
 	"github.com/en666ki/urlime/internal/shortener/viewmodels"
-	"github.com/go-chi/chi/v5"
+	"github.com/go-chi/chi"
 	"github.com/stretchr/testify/assert"
 )
 
