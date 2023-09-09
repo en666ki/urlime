@@ -8,7 +8,7 @@ db:
   host: "postgres_test"
   name: "local"
   port: 5432
-  table: "local_urls"
+  table: "urls"
   user: "local"
   password: "local_pwd"
 api:

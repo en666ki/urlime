@@ -22,6 +22,9 @@ jobs:
           POSTGRES_DB: local_short
           POSTGRES_PORT: 5432
 
+        volumes:
+          - ./sql/create_table.sql:/docker-entrypoint-initdb.d/create_table.sql
+
         options: >-
           --health-cmd pg_isready
           --health-interval 10s

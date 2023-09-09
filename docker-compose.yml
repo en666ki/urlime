@@ -11,7 +11,7 @@ services:
       - POSTGRES_DB=${TEST_POSTGRES_DB}
       - POSTGRES_PORT=${TEST_POSTGRES_PORT}
     volumes:
-      - db:/var/lib/postgresql/data
+      - ./sql/create_table.sql:/docker-entrypoint-initdb.d/create_table.sql
     ports:
       - '5432:5432'
 
@@ -37,10 +37,6 @@ services:
     environment:
       - TZ=Armenia/Yerevan
       - LC_ALL=C.UTF-8
-      - TEST_POSTGRES_USER=${TEST_POSTGRES_USER}
-      - TEST_POSTGRES_PASSWORD=${TEST_POSTGRES_PASSWORD}
-      - TEST_POSTGRES_DB=${TEST_POSTGRES_DB}
-      - TEST_POSTGRES_PORT=${TEST_POSTGRES_PORT}
     cap_add:
       # For debugging with dlv
       - SYS_PTRACE

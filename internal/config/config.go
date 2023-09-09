@@ -74,12 +74,13 @@ func TestConfig() *Config {
 		DB: DB{
 			Driver:   "postgres",
 			DB:       "postgres",
-			Host:     "postgres",
-			Name:     "local_short",
+			Host:     "postgres_test",
+			Name:     "local",
 			Port:     5432,
-			Table:    "local_urls",
+			Table:    "urls",
 			User:     "local",
 			Password: "local_pwd",
+			SslMode:  "disable",
 		},
 		Api: Api{
 			Params: Params{
