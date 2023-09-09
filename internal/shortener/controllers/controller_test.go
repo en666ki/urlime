@@ -5,14 +5,17 @@ import (
 	"net/http/httptest"
 	"testing"
 
+	"github.com/en666ki/urlime/internal/shortener/interfaces/mocks"
+	"github.com/en666ki/urlime/internal/shortener/models"
+	"github.com/en666ki/urlime/internal/shortener/viewmodels"
 	"github.com/go-chi/chi/v5"
 	"github.com/stretchr/testify/assert"
 )
 
 func TestShorten(t *testing.T) {
-	urlService := new(MockUrlService)
+	urlService := new(mocks.MockUrlService)
 
-	urlService.On("StoreShortenUrl", "testurl").Return(UrlVM{"testsurl", "testurl"}, nil)
+	urlService.On("StoreShortenUrl", "testurl").Return(viewmodels.UrlVM{"testsurl", "testurl"}, nil)
 
 	urlController := UrlController{urlService}
 	req := httptest.NewRequest("GET", "http://localhost:8080/shorten/testurl", nil)
@@ -24,11 +27,11 @@ func TestShorten(t *testing.T) {
 
 	r.ServeHTTP(w, req)
 
-	expecterResult := UrlVM{}
+	expecterResult := viewmodels.UrlVM{}
 	expecterResult.Url = "testurl"
 	expecterResult.Surl = "testsurl"
 
-	actualResult := UrlVM{}
+	actualResult := viewmodels.UrlVM{}
 
 	json.NewDecoder(w.Body).Decode(&actualResult)
 
@@ -36,9 +39,9 @@ func TestShorten(t *testing.T) {
 }
 
 func TestUnshort(t *testing.T) {
-	urlService := new(MockUrlService)
+	urlService := new(mocks.MockUrlService)
 
-	urlService.On("ReadUrl", "testsurl").Return(Url{123, "testsurl", "testurl"}, nil)
+	urlService.On("ReadUrl", "testsurl").Return(models.Url{123, "testsurl", "testurl"}, nil)
 
 	urlController := UrlController{urlService}
 	req := httptest.NewRequest("GET", "http://localhost:8080/unshort/testsurl", nil)
@@ -50,11 +53,11 @@ func TestUnshort(t *testing.T) {
 
 	r.ServeHTTP(w, req)
 
-	expecterResult := UrlVM{}
+	expecterResult := viewmodels.UrlVM{}
 	expecterResult.Url = "testurl"
 	expecterResult.Surl = "testsurl"
 
-	actualResult := UrlVM{}
+	actualResult := viewmodels.UrlVM{}
 
 	json.NewDecoder(w.Body).Decode(&actualResult)
 

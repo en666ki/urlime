@@ -1,4 +1,4 @@
-package url
+package viewmodels
 
 type UrlVM struct {
 	Surl string
