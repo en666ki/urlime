@@ -5,6 +5,7 @@ import (
 	"net/http/httptest"
 	"testing"
 
+	"github.com/en666ki/urlime/internal/config"
 	"github.com/en666ki/urlime/internal/shortener/interfaces/mocks"
 	"github.com/en666ki/urlime/internal/shortener/models"
 	"github.com/en666ki/urlime/internal/shortener/viewmodels"
@@ -17,7 +18,7 @@ func TestShorten(t *testing.T) {
 
 	urlService.On("StoreShortenUrl", "testurl").Return(viewmodels.UrlVM{"testsurl", "testurl"}, nil)
 
-	urlController := UrlController{urlService}
+	urlController := New(urlService, config.TestConfig())
 	req := httptest.NewRequest("GET", "http://localhost:8080/shorten/testurl", nil)
 	w := httptest.NewRecorder()
 
@@ -43,7 +44,7 @@ func TestUnshort(t *testing.T) {
 
 	urlService.On("ReadUrl", "testsurl").Return(models.Url{123, "testsurl", "testurl"}, nil)
 
-	urlController := UrlController{urlService}
+	urlController := New(urlService, config.TestConfig())
 	req := httptest.NewRequest("GET", "http://localhost:8080/unshort/testsurl", nil)
 	w := httptest.NewRecorder()
 

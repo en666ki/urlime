@@ -1,6 +1,10 @@
 package services
 
 import (
+	
+	"log"
+
+	"github.com/en666ki/urlime/internal/config"
 	"github.com/en666ki/urlime/internal/shortener/interfaces"
 	"github.com/en666ki/urlime/internal/shortener/models"
 	"github.com/en666ki/urlime/internal/shortener/utils"
@@ -9,11 +13,16 @@ import (
 
 type UrlService struct {
 	interfaces.IUrlRepository
+	cfg *config.Config
+}
+
+func New(repository interfaces.IUrlRepository, cfg *config.Config) *UrlService {
+	return &UrlService{repository, cfg}
 }
 
 func (s *UrlService) StoreShortenUrl(url string) (viewmodels.UrlVM, error) {
-
 	surl := utils.Shorten(url)
+	log.Println(url)
 	err := s.PutUrl(surl, url)
 	if err != nil {
 		return viewmodels.UrlVM{}, err

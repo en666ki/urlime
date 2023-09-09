@@ -11,10 +11,10 @@ import (
 func main() {
 	cfg := config.MustLoad()
 
-	shortenRouter, err := routers.ShortenRouter().InitRouter(&cfg)
+	shortenRouter, err := routers.ShortenRouter().InitRouter(cfg)
 	if err != nil {
 		log.Println(err)
 		return
 	}
-	http.ListenAndServe(":8080", shortenRouter)
+	http.ListenAndServe(cfg.Server.Host+cfg.Server.Port, shortenRouter)
 }

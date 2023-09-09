@@ -5,6 +5,7 @@ import (
 
 	"github.com/stretchr/testify/assert"
 
+	"github.com/en666ki/urlime/internal/config"
 	"github.com/en666ki/urlime/internal/shortener/interfaces/mocks"
 	"github.com/en666ki/urlime/internal/shortener/models"
 	"github.com/en666ki/urlime/internal/shortener/utils"
@@ -16,7 +17,7 @@ func TestStoreShortenUrl(t *testing.T) {
 
 	urlRepository.On("PutUrl", utils.Shorten("testurl"), "testurl").Return(nil)
 
-	urlService := UrlService{urlRepository}
+	urlService := New(urlRepository, config.TestConfig())
 
 	expectedUrl := viewmodels.UrlVM{utils.Shorten("testurl"), "testurl"}
 
@@ -30,7 +31,7 @@ func TestReadUrl(t *testing.T) {
 
 	urlRepository.On("GetUrl", utils.Shorten("testurl")).Return(models.Url{123, utils.Shorten("testurl"), "testurl"}, nil)
 
-	urlService := UrlService{urlRepository}
+	urlService := New(urlRepository, config.TestConfig())
 
 	expectedUrl := models.Url{123, utils.Shorten("testurl"), "testurl"}
 
