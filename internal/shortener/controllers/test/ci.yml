@@ -5,7 +5,7 @@ server:
 db:
   db: "postgres"
   driver: "postgres"
-  host: "postgres_test"
+  host: "localhost"
   name: "local"
   port: 5432
   table: "urls"
