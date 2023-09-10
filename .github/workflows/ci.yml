@@ -46,7 +46,7 @@ jobs:
         run: CONFIG_PATH=test/ci.yml go test -v ./...
 
       - name: Run coverage
-        run: CONFIG_PATH=test/ci.yml go test -race -coverprofile=coverage.out -covermode=atomic ./... -coverpkg=./...``
+        run: CONFIG_PATH=test/ci.yml go test -coverpkg=./... -race -coverprofile=coverage.out -covermode=atomic ./...
 
       - name: Upload coverage reports to Codecov
         uses: codecov/codecov-action@v3
