@@ -2,7 +2,6 @@ package repositories
 
 import (
 	"fmt"
-	"log"
 
 	"github.com/en666ki/urlime/internal/config"
 	"github.com/en666ki/urlime/internal/db"
@@ -21,7 +20,6 @@ func New(handler db.IDHandler, cfg *config.Config) *UrlRepository {
 func (r *UrlRepository) PutUrl(surl, url string) error {
 	_, err := r.Execute(fmt.Sprintf("INSERT INTO %s (surl, url) VALUES ('%s', '%s')", r.cfg.DB.Table, surl, url))
 	if err != nil {
-		log.Println(err)
 		return err
 	}
 	return nil
@@ -34,7 +32,10 @@ func (r *UrlRepository) GetUrl(surl string) (models.Url, error) {
 	}
 	var url models.Url
 	row.Next()
-	row.Scan(&url.Surl, &url.Url)
+	err = row.Scan(&url.Surl, &url.Url)
+	if err != nil {
+		return models.Url{}, err
+	}
 
 	return url, nil
 }

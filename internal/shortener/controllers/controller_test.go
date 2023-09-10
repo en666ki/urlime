@@ -2,7 +2,9 @@ package controllers
 
 import (
 	"encoding/json"
+	"log/slog"
 	"net/http/httptest"
+	"os"
 	"testing"
 
 	"github.com/en666ki/urlime/internal/config"
@@ -16,9 +18,11 @@ import (
 func TestShorten(t *testing.T) {
 	urlService := new(mocks.MockUrlService)
 
+	log := slog.New(slog.NewTextHandler(os.Stderr, &slog.HandlerOptions{Level: slog.LevelDebug}))
+
 	urlService.On("StoreShortenUrl", "testurl").Return(viewmodels.UrlVM{"testsurl", "testurl"}, nil)
 
-	urlController := New(urlService, config.MustLoad())
+	urlController := New(urlService, config.MustLoad(), log)
 	req := httptest.NewRequest("GET", "http://localhost:8080/shorten/testurl", nil)
 	w := httptest.NewRecorder()
 
@@ -42,9 +46,11 @@ func TestShorten(t *testing.T) {
 func TestUnshort(t *testing.T) {
 	urlService := new(mocks.MockUrlService)
 
+	log := slog.New(slog.NewTextHandler(os.Stderr, &slog.HandlerOptions{Level: slog.LevelDebug}))
+
 	urlService.On("ReadUrl", "testsurl").Return(models.Url{"testsurl", "testurl"}, nil)
 
-	urlController := New(urlService, config.MustLoad())
+	urlController := New(urlService, config.MustLoad(), log)
 	req := httptest.NewRequest("GET", "http://localhost:8080/unshort/testsurl", nil)
 	w := httptest.NewRecorder()
 

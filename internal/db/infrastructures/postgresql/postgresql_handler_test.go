@@ -3,7 +3,6 @@ package postgresql
 import (
 	"database/sql"
 	"fmt"
-	"log"
 	"testing"
 
 	"github.com/en666ki/urlime/internal/config"
@@ -23,7 +22,6 @@ func TestPostgresqlHandler(t *testing.T) {
 
 func (s *PostgresqlHandlerSuite) SetupTest() {
 	s.cfg = config.MustLoad()
-	log.Println(s.cfg)
 	sqlConn, err := sql.Open(s.cfg.DB.Driver,
 		fmt.Sprintf("host=%s port=%d dbname=%s user=%s password=%s sslmode=%s",
 			s.cfg.DB.Host, s.cfg.DB.Port, s.cfg.DB.Name, s.cfg.DB.User, s.cfg.DB.Password, s.cfg.DB.SslMode))
@@ -33,8 +31,6 @@ func (s *PostgresqlHandlerSuite) SetupTest() {
 }
 
 func (s *PostgresqlHandlerSuite) TearDownTest() {
-	log.Println(s.cfg)
-
 	_, err := s.handler.Execute(fmt.Sprintf(`
 		TRUNCATE TABLE %s;
 	`, s.cfg.DB.Table))
@@ -44,8 +40,6 @@ func (s *PostgresqlHandlerSuite) TearDownTest() {
 }
 
 func (s *PostgresqlHandlerSuite) TestExecute() {
-	log.Println(s.cfg)
-
 	result, err := s.handler.Execute(fmt.Sprintf(`
 		INSERT INTO %s (surl, url) VALUES ('tst_exec', 'test_exec');
 	`, s.cfg.DB.Table))
@@ -56,8 +50,6 @@ func (s *PostgresqlHandlerSuite) TestExecute() {
 }
 
 func (s *PostgresqlHandlerSuite) TestQuery() {
-	log.Println(s.cfg)
-
 	result, err := s.handler.Execute(fmt.Sprintf(`
 		INSERT INTO %s (surl, url) VALUES ('tst', 'test');
 	`, s.cfg.DB.Table))

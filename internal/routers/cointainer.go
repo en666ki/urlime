@@ -3,6 +3,7 @@ package routers
 import (
 	"database/sql"
 	"fmt"
+	"log/slog"
 	"sync"
 
 	"github.com/en666ki/urlime/internal/config"
@@ -14,12 +15,12 @@ import (
 )
 
 type IServiceContainer interface {
-	InjectUrlController(cfg *config.Config) (controllers.UrlController, error)
+	InjectUrlController(cfg *config.Config, log *slog.Logger) (controllers.UrlController, error)
 }
 
 type kernel struct{}
 
-func (kernel *kernel) InjectUrlController(cfg *config.Config) (controllers.UrlController, error) {
+func (kernel *kernel) InjectUrlController(cfg *config.Config, log *slog.Logger) (controllers.UrlController, error) {
 	sqlConn, err := sql.Open(cfg.DB.Driver, fmt.Sprintf("host=%s port=%d dbname=%s user=%s password=%s sslmode=%s", cfg.DB.Host, cfg.DB.Port, cfg.DB.Name, cfg.DB.User, cfg.DB.Password, cfg.DB.SslMode))
 	if err != nil {
 		return controllers.UrlController{}, err
@@ -28,7 +29,7 @@ func (kernel *kernel) InjectUrlController(cfg *config.Config) (controllers.UrlCo
 
 	urlRepository := repositories.New(postgresqlHandler, cfg)
 	urlService := services.New(urlRepository, cfg)
-	urlController := controllers.New(urlService, cfg)
+	urlController := controllers.New(urlService, cfg, log)
 	return *urlController, nil
 }
 
