@@ -1,0 +1,52 @@
+# This workflow will build a golang project
+# For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-go
+
+name: Go
+
+on:
+  push:
+    branches: ["master"]
+  pull_request:
+    branches: ["master"]
+
+env:
+  ACTIONS_RUNNER_DEBUG: true
+  ACTIONS_STEP_DEBUG: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    services:
+      postgres_test:
+        image: postgres:latest
+        env:
+          POSTGRES_USER: local
+          POSTGRES_PASSWORD: local_pwd
+          POSTGRES_HOST_AUTH_METHOD: trust
+          POSTGRES_DB: local
+          POSTGRES_PORT: 5432
+        volumes:
+          - ${{ github.workspace }}/init/:/docker-entrypoint-initdb.d
+        ports:
+          - 5432:5432
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Set up Go
+        uses: actions/setup-go@v4
+        with:
+          go-version: "1.21"
+
+      - name: Build
+        run: go build -v ./...
+
+      - name: Test
+        run: CONFIG_PATH=test/ci.yml go test -v ./...
+
+      - name: Run coverage
+        run: CONFIG_PATH=test/ci.yml go test -race -coverprofile=coverage.out -covermode=atomic ./... -coverpkg=./...``
+
+      - name: Upload coverage reports to Codecov
+        uses: codecov/codecov-action@v3
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
