@@ -16,7 +16,7 @@ type IShortenRouter interface {
 type router struct{}
 
 func (router *router) InitRouter(cfg *config.Config, log *slog.Logger) (*chi.Mux, error) {
-	urlController, err := ServiceContainer().InjectUrlController(cfg, log)
+	urlController, err := ServiceContainer().InjectShortenerController(cfg, log)
 	if err != nil {
 		return nil, err
 	}
