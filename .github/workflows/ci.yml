@@ -38,6 +38,10 @@ jobs:
         run: |
           docker-compose up -d db
           docker-compose up migrate
+      - name: Set up Go
+        uses: actions/setup-go@v4
+        with:
+          go-version: "1.21"
       - name: Test
         run: CONFIG_PATH=test/ci.yml go test -v ./...
 
