@@ -35,7 +35,7 @@ func TestReadUrl(t *testing.T) {
 
 	expectedUrl := models.Url{utils.Shorten("testurl"), "testurl"}
 
-	result, err := urlService.GetUrl(utils.Shorten("testurl"))
+	result, err := urlService.ReadUrl(utils.Shorten("testurl"))
 	assert.NoError(t, err)
 	assert.Equal(t, expectedUrl, result)
 }
