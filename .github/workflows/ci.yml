@@ -27,7 +27,7 @@ jobs:
         uses: golangci/golangci-lint-action@v3
         with:
           version: v1.54
-          args: --timeout=30m --config=./.github/workflows/.golangci.yml --issues-exit-code=0
+          args: --timeout=30m --config=./.github/.golangci.yml --issues-exit-code=0
           only-new-issues: true
 
   test:
