@@ -1,7 +1,8 @@
 version: "3.7"
 
 services:
-  postgres_test:
+  db:
+    container_name: postgres_test
     image: postgres:latest
     restart: always
     environment:
@@ -14,9 +15,29 @@ services:
       - ./init/:/docker-entrypoint-initdb.d
     ports:
       - '5432:5432'
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U test -d gomin"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  migrate:
+    depends_on:
+      - db
+    image: arigaio/atlas:latest
+    volumes:
+      - "./db:/tmp/database"
+    command: >
+      schema apply \
+        --auto-approve \
+        --url "postgres://local:local_pwd@postgres_test:5432/local?sslmode=disable" \
+        --to "file://tmp/database/schema.hcl" \
+        --dev-url "postgres://local:local_pwd@postgres_test:5432/local?sslmode=disable"
 
   vscode:
     build: .
+    depends_on:
+      - db
     volumes:
       - ./:/workspace
       # Docker
@@ -45,7 +66,7 @@ services:
       - seccomp:unconfined
     entrypoint: [ "zsh", "-c", "while sleep 1000; do :; done" ]
     links:
-      - postgres_test
+      - db
 
 volumes:
   db:

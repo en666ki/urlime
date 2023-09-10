@@ -29,11 +29,11 @@ func TestStoreShortenUrl(t *testing.T) {
 func TestReadUrl(t *testing.T) {
 	urlRepository := new(mocks.MockUrlRepository)
 
-	urlRepository.On("GetUrl", utils.Shorten("testurl")).Return(models.Url{123, utils.Shorten("testurl"), "testurl"}, nil)
+	urlRepository.On("GetUrl", utils.Shorten("testurl")).Return(models.Url{utils.Shorten("testurl"), "testurl"}, nil)
 
 	urlService := New(urlRepository, config.MustLoad())
 
-	expectedUrl := models.Url{123, utils.Shorten("testurl"), "testurl"}
+	expectedUrl := models.Url{utils.Shorten("testurl"), "testurl"}
 
 	result, err := urlService.GetUrl(utils.Shorten("testurl"))
 	assert.NoError(t, err)

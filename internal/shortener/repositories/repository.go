@@ -34,7 +34,7 @@ func (r *UrlRepository) GetUrl(surl string) (models.Url, error) {
 	}
 	var url models.Url
 	row.Next()
-	row.Scan(&url.Id, &url.Surl, &url.Url)
+	row.Scan(&url.Surl, &url.Url)
 
 	return url, nil
 }

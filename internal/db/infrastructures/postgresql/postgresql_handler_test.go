@@ -72,7 +72,7 @@ func (s *PostgresqlHandlerSuite) TestQuery() {
 	var surl, url string
 	r := row.Next()
 	s.True(r)
-	err = row.Scan(new(int64), &surl, &url)
+	err = row.Scan(&surl, &url)
 	s.NoError(err)
 	s.Equal("tst", surl)
 	s.Equal("test", url)

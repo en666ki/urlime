@@ -42,7 +42,7 @@ func TestShorten(t *testing.T) {
 func TestUnshort(t *testing.T) {
 	urlService := new(mocks.MockUrlService)
 
-	urlService.On("ReadUrl", "testsurl").Return(models.Url{123, "testsurl", "testurl"}, nil)
+	urlService.On("ReadUrl", "testsurl").Return(models.Url{"testsurl", "testurl"}, nil)
 
 	urlController := New(urlService, config.MustLoad())
 	req := httptest.NewRequest("GET", "http://localhost:8080/unshort/testsurl", nil)
