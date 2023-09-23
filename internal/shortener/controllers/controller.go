@@ -25,7 +25,7 @@ func (c *UrlController) Shorten(res http.ResponseWriter, req *http.Request) {
 
 	result := c.StoreShortenUrl(url)
 	if result.Data == nil {
-		c.log.Error("Error", "err", result.Message, "url", url)
+		c.log.Error(result.Message, "domain", "controller", "func", "Shorten", "url", url)
 		res.WriteHeader(result.Code)
 		res.Write([]byte(http.StatusText(result.Code)))
 		return
@@ -39,7 +39,7 @@ func (c *UrlController) Unshort(res http.ResponseWriter, req *http.Request) {
 
 	result := c.ReadUrl(surl)
 	if result.Data == nil {
-		c.log.Error("Error", "err", result.Message, "surl", surl)
+		c.log.Error(result.Message, "domain", "controller", "func", "Unshort", "surl", surl)
 		res.WriteHeader(result.Code)
 		res.Write([]byte(http.StatusText(result.Code)))
 		return

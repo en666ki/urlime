@@ -27,8 +27,8 @@ func (kernel *kernel) InjectShortenerController(cfg *config.Config, log *slog.Lo
 	}
 	postgresqlHandler := postgresql.New(sqlConn)
 
-	urlRepository := repositories.New(postgresqlHandler, cfg)
-	urlService := services.New(urlRepository, cfg)
+	urlRepository := repositories.New(postgresqlHandler, cfg, log)
+	urlService := services.New(urlRepository, cfg, log)
 	urlController := controllers.New(urlService, cfg, log)
 	return *urlController, nil
 }
