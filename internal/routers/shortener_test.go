@@ -35,12 +35,12 @@ func (s *ShortenerTestSuite) SetupTest() {
 }
 
 func (s *ShortenerTestSuite) TestE2E() {
-	req := httptest.NewRequest("GET", "http://localhost:8080/shorten/testurl", nil)
+	req := httptest.NewRequest("GET", "http://localhost:8080/shorten/asdfg", nil)
 	w := httptest.NewRecorder()
 	s.router.ServeHTTP(w, req)
 
 	expectedData := viewmodels.UrlVM{}
-	expectedData.Url = "testurl"
+	expectedData.Url = "asdfg"
 
 	actualResult := result.Result{}
 
@@ -58,7 +58,7 @@ func (s *ShortenerTestSuite) TestE2E() {
 	s.router.ServeHTTP(w, req)
 
 	expectedData = viewmodels.UrlVM{}
-	expectedData.Url = "testurl"
+	expectedData.Url = "asdfg"
 	expectedData.Surl = surl
 	expectedResult := result.Result{
 		Data:    &expectedData,
