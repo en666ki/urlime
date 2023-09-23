@@ -2,7 +2,6 @@ package controllers
 
 import (
 	"encoding/json"
-	"errors"
 	"log/slog"
 	"net/http"
 	"net/http/httptest"
@@ -11,7 +10,7 @@ import (
 
 	"github.com/en666ki/urlime/internal/config"
 	"github.com/en666ki/urlime/internal/shortener/interfaces/mocks"
-	"github.com/en666ki/urlime/internal/shortener/models"
+	"github.com/en666ki/urlime/internal/shortener/result"
 	"github.com/en666ki/urlime/internal/shortener/viewmodels"
 	"github.com/go-chi/chi"
 	"github.com/stretchr/testify/assert"
@@ -22,7 +21,15 @@ func TestShorten(t *testing.T) {
 
 	log := slog.New(slog.NewTextHandler(os.Stderr, &slog.HandlerOptions{Level: slog.LevelDebug}))
 
-	urlService.On("StoreShortenUrl", "testurl").Return(viewmodels.UrlVM{"testsurl", "testurl"}, nil)
+	urlService.
+		On("StoreShortenUrl", "testurl").
+		Return(
+			result.Result{
+				Data:    &viewmodels.UrlVM{Surl: "testsurl", Url: "testurl"},
+				Code:    200,
+				Message: "",
+			},
+		)
 
 	urlController := New(urlService, config.MustLoad(), log)
 	req := httptest.NewRequest("GET", "http://localhost:8080/shorten/testurl", nil)
@@ -34,15 +41,20 @@ func TestShorten(t *testing.T) {
 
 	r.ServeHTTP(w, req)
 
-	expecterResult := viewmodels.UrlVM{}
-	expecterResult.Url = "testurl"
-	expecterResult.Surl = "testsurl"
+	expectedData := viewmodels.UrlVM{}
+	expectedData.Url = "testurl"
+	expectedData.Surl = "testsurl"
+	expectedResult := result.Result{
+		Data:    &expectedData,
+		Code:    200,
+		Message: "",
+	}
 
-	actualResult := viewmodels.UrlVM{}
+	actualResult := result.Result{}
 
 	json.NewDecoder(w.Body).Decode(&actualResult)
 
-	assert.Equal(t, expecterResult, actualResult)
+	assert.Equal(t, expectedResult, actualResult)
 }
 
 func TestShortenError(t *testing.T) {
@@ -52,7 +64,13 @@ func TestShortenError(t *testing.T) {
 
 	urlService.
 		On("StoreShortenUrl", "testurl").
-		Return(viewmodels.UrlVM{}, errors.New("oops! gremlins broke Shorten handler!"))
+		Return(
+			result.Result{
+				Data:    nil,
+				Code:    500,
+				Message: "oops! gremlins broke Shorten handler!",
+			},
+		)
 
 	urlController := New(urlService, config.MustLoad(), log)
 	req := httptest.NewRequest("GET", "http://localhost:8080/shorten/testurl", nil)
@@ -72,7 +90,18 @@ func TestUnshort(t *testing.T) {
 
 	log := slog.New(slog.NewTextHandler(os.Stderr, &slog.HandlerOptions{Level: slog.LevelDebug}))
 
-	urlService.On("ReadUrl", "testsurl").Return(models.Url{"testsurl", "testurl"}, nil)
+	urlService.
+		On("ReadUrl", "testsurl").
+		Return(
+			result.Result{
+				Data: &viewmodels.UrlVM{
+					Surl: "testsurl",
+					Url:  "testurl",
+				},
+				Code:    200,
+				Message: "",
+			},
+		)
 
 	urlController := New(urlService, config.MustLoad(), log)
 	req := httptest.NewRequest("GET", "http://localhost:8080/unshort/testsurl", nil)
@@ -84,15 +113,20 @@ func TestUnshort(t *testing.T) {
 
 	r.ServeHTTP(w, req)
 
-	expecterResult := viewmodels.UrlVM{}
-	expecterResult.Url = "testurl"
-	expecterResult.Surl = "testsurl"
+	expectedData := viewmodels.UrlVM{}
+	expectedData.Url = "testurl"
+	expectedData.Surl = "testsurl"
+	expectedResult := result.Result{
+		Data:    &expectedData,
+		Code:    200,
+		Message: "",
+	}
 
-	actualResult := viewmodels.UrlVM{}
+	actualResult := result.Result{}
 
 	json.NewDecoder(w.Body).Decode(&actualResult)
 
-	assert.Equal(t, expecterResult, actualResult)
+	assert.Equal(t, expectedResult, actualResult)
 }
 
 func TestUnshortError(t *testing.T) {
@@ -102,7 +136,13 @@ func TestUnshortError(t *testing.T) {
 
 	urlService.
 		On("ReadUrl", "testsurl").
-		Return(models.Url{}, errors.New("oops! gremlins broke Unshort handler!"))
+		Return(
+			result.Result{
+				Data:    nil,
+				Code:    500,
+				Message: "oops!",
+			},
+		)
 
 	urlController := New(urlService, config.MustLoad(), log)
 	req := httptest.NewRequest("GET", "http://localhost:8080/unshort/testsurl", nil)

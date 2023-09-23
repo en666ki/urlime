@@ -7,7 +7,6 @@ import (
 
 	"github.com/en666ki/urlime/internal/config"
 	"github.com/en666ki/urlime/internal/shortener/interfaces"
-	"github.com/en666ki/urlime/internal/shortener/viewmodels"
 	"github.com/go-chi/chi"
 )
 
@@ -24,27 +23,27 @@ func New(service interfaces.IUrlService, cfg *config.Config, log *slog.Logger) *
 func (c *UrlController) Shorten(res http.ResponseWriter, req *http.Request) {
 	url := chi.URLParam(req, c.cfg.Api.Params.Shorten)
 
-	storedUrl, err := c.StoreShortenUrl(url)
-	if err != nil {
-		c.log.Error("Error", "err", err, "url", url)
-		res.WriteHeader(http.StatusInternalServerError)
-		res.Write([]byte(http.StatusText(http.StatusInternalServerError)))
+	result := c.StoreShortenUrl(url)
+	if result.Data == nil {
+		c.log.Error("Error", "err", result.Message, "url", url)
+		res.WriteHeader(result.Code)
+		res.Write([]byte(http.StatusText(result.Code)))
 		return
 	}
-	c.log.Info("OK", "surl", storedUrl.Surl, "url", storedUrl.Url)
-	json.NewEncoder(res).Encode(viewmodels.UrlVM{storedUrl.Surl, storedUrl.Url})
+	c.log.Info("OK", "surl", result.Data.Surl, "url", result.Data.Url)
+	json.NewEncoder(res).Encode(result)
 }
 
 func (c *UrlController) Unshort(res http.ResponseWriter, req *http.Request) {
 	surl := chi.URLParam(req, c.cfg.Api.Params.Unshort)
 
-	url, err := c.ReadUrl(surl)
-	if err != nil {
-		c.log.Error("Error", "err", err, "surl", surl)
-		res.WriteHeader(http.StatusInternalServerError)
-		res.Write([]byte(http.StatusText(http.StatusInternalServerError)))
+	result := c.ReadUrl(surl)
+	if result.Data == nil {
+		c.log.Error("Error", "err", result.Message, "surl", surl)
+		res.WriteHeader(result.Code)
+		res.Write([]byte(http.StatusText(result.Code)))
 		return
 	}
-	c.log.Info("OK", "surl", url.Surl, "url", url.Url)
-	json.NewEncoder(res).Encode(viewmodels.UrlVM{url.Surl, url.Url})
+	c.log.Info("OK", "surl", result.Data.Surl, "url", result.Data.Url)
+	json.NewEncoder(res).Encode(result)
 }
