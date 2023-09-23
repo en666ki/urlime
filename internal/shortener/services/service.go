@@ -3,6 +3,7 @@ package services
 import (
 	"errors"
 	"log/slog"
+	"net/http"
 
 	"github.com/en666ki/urlime/internal/config"
 	"github.com/en666ki/urlime/internal/shortener/interfaces"
@@ -30,7 +31,7 @@ func (s *UrlService) StoreShortenUrl(url string) result.Result {
 		code := errorToCode(err)
 		return result.Result{Data: nil, Code: code, Message: "can't put " + surl + ": " + err.Error()}
 	}
-	return result.Result{Data: &viewmodels.UrlVM{surl, url}, Code: 200, Message: ""}
+	return result.Result{Data: &viewmodels.UrlVM{surl, url}, Code: http.StatusCreated, Message: ""}
 }
 
 func (s *UrlService) ReadUrl(surl string) result.Result {
@@ -41,7 +42,7 @@ func (s *UrlService) ReadUrl(surl string) result.Result {
 		return result.Result{Data: nil, Code: code, Message: "can't get " + surl + ": " + err.Error()}
 	}
 	vurl := viewmodels.FromModel(url)
-	return result.Result{Data: &vurl, Code: 201, Message: ""}
+	return result.Result{Data: &vurl, Code: http.StatusOK, Message: ""}
 }
 
 func errorToCode(err error) int {
