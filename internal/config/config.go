@@ -61,32 +61,3 @@ func MustLoad() *Config {
 
 	return &cfg
 }
-
-func TestConfig() *Config {
-	return &Config{
-		Env: "local",
-		Server: Server{
-			Host:        "localhost",
-			Port:        "8080",
-			Timeout:     time.Duration(4 * time.Second),
-			IdleTimeout: time.Duration(60 * time.Second),
-		},
-		DB: DB{
-			Driver:   "postgres",
-			DB:       "postgres",
-			Host:     "postgres_test",
-			Name:     "local",
-			Port:     5432,
-			Table:    "urls",
-			User:     "local",
-			Password: "local_pwd",
-			SslMode:  "disable",
-		},
-		Api: Api{
-			Params: Params{
-				Shorten: "url",
-				Unshort: "surl",
-			},
-		},
-	}
-}
