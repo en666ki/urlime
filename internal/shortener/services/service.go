@@ -3,7 +3,7 @@ package services
 import (
 	"github.com/en666ki/urlime/internal/config"
 	"github.com/en666ki/urlime/internal/shortener/interfaces"
-	"github.com/en666ki/urlime/internal/shortener/models"
+	"github.com/en666ki/urlime/internal/shortener/result"
 	"github.com/en666ki/urlime/internal/shortener/utils"
 	"github.com/en666ki/urlime/internal/shortener/viewmodels"
 )
@@ -17,19 +17,20 @@ func New(repository interfaces.IUrlRepository, cfg *config.Config) *UrlService {
 	return &UrlService{repository, cfg}
 }
 
-func (s *UrlService) StoreShortenUrl(url string) (viewmodels.UrlVM, error) {
+func (s *UrlService) StoreShortenUrl(url string) result.Result {
 	surl := utils.Shorten(url)
 	err := s.PutUrl(surl, url)
 	if err != nil {
-		return viewmodels.UrlVM{}, err
+		return result.Result{Data: nil, Code: 500, Message: "can't put " + surl + ": " + err.Error()}
 	}
-	return viewmodels.UrlVM{surl, url}, nil
+	return result.Result{Data: &viewmodels.UrlVM{surl, url}, Code: 200, Message: ""}
 }
 
-func (s *UrlService) ReadUrl(surl string) (models.Url, error) {
+func (s *UrlService) ReadUrl(surl string) result.Result {
 	url, err := s.GetUrl(surl)
 	if err != nil {
-		return models.Url{}, err
+		return result.Result{Data: nil, Code: 500, Message: "can't get " + surl + ": " + err.Error()}
 	}
-	return url, nil
+	vurl := viewmodels.FromModel(url)
+	return result.Result{Data: &vurl, Code: 200, Message: ""}
 }

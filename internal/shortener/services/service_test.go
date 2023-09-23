@@ -1,6 +1,7 @@
 package services
 
 import (
+	"errors"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -21,9 +22,23 @@ func TestStoreShortenUrl(t *testing.T) {
 
 	expectedUrl := viewmodels.UrlVM{utils.Shorten("testurl"), "testurl"}
 
-	result, err := urlService.StoreShortenUrl("testurl")
-	assert.NoError(t, err)
-	assert.Equal(t, expectedUrl, result)
+	result := urlService.StoreShortenUrl("testurl")
+	vurl := viewmodels.FromModel(models.Url(*result.Data))
+
+	assert.Empty(t, result.Message)
+	assert.Equal(t, expectedUrl, vurl)
+}
+
+func TestStoreShortenUrlError(t *testing.T) {
+	urlRepository := new(mocks.MockUrlRepository)
+
+	urlRepository.On("PutUrl", utils.Shorten("testurl"), "testurl").Return(errors.New("woops!"))
+
+	urlService := New(urlRepository, config.MustLoad())
+
+	result := urlService.StoreShortenUrl("testurl")
+
+	assert.NotEmpty(t, result.Message)
 }
 
 func TestReadUrl(t *testing.T) {
@@ -33,9 +48,23 @@ func TestReadUrl(t *testing.T) {
 
 	urlService := New(urlRepository, config.MustLoad())
 
-	expectedUrl := models.Url{utils.Shorten("testurl"), "testurl"}
+	expectedUrl := viewmodels.UrlVM{utils.Shorten("testurl"), "testurl"}
 
-	result, err := urlService.ReadUrl(utils.Shorten("testurl"))
-	assert.NoError(t, err)
-	assert.Equal(t, expectedUrl, result)
+	result := urlService.ReadUrl(utils.Shorten("testurl"))
+	vurl := viewmodels.FromModel(models.Url(*result.Data))
+
+	assert.Empty(t, result.Message)
+	assert.Equal(t, expectedUrl, vurl)
+}
+
+func TestReadUrlError(t *testing.T) {
+	urlRepository := new(mocks.MockUrlRepository)
+
+	urlRepository.On("GetUrl", utils.Shorten("testurl")).Return(models.Url{utils.Shorten("testurl"), "testurl"}, errors.New("woops!"))
+
+	urlService := New(urlRepository, config.MustLoad())
+
+	result := urlService.ReadUrl(utils.Shorten("testurl"))
+
+	assert.NotEmpty(t, result.Message)
 }

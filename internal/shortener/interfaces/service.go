@@ -1,11 +1,10 @@
 package interfaces
 
 import (
-	"github.com/en666ki/urlime/internal/shortener/models"
-	"github.com/en666ki/urlime/internal/shortener/viewmodels"
+	"github.com/en666ki/urlime/internal/shortener/result"
 )
 
 type IUrlService interface {
-	StoreShortenUrl(url string) (viewmodels.UrlVM, error)
-	ReadUrl(surl string) (models.Url, error)
+	StoreShortenUrl(url string) result.Result
+	ReadUrl(surl string) result.Result
 }
