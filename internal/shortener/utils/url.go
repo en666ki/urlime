@@ -1,21 +1,21 @@
 package utils
 
 import (
-	"crypto/md5"
-	"fmt"
-	"strings"
+	"regexp"
 )
 
-func hasScheme(url string) bool {
-	return len(strings.Split(url, "://")) >= 2
+type Blacklist map[string]struct{}
 
+func IsValidUrl(str string, blacklist Blacklist) (bool, error) {
+	r, err := regexp.Match(`^(?:https?:\/\/)?(?:\w+[.])+[a-zA-Z]+(?:.*)*$`, []byte(str))
+	if err != nil {
+		return false, err
+	}
+	_, blacklisted := blacklist[str]
+	return r && !blacklisted, nil
 }
 
-func Shorten(url string) string {
-	sum := md5.Sum([]byte(url))
-	var s [md5.Size]byte
-	for i, b := range sum {
-		s[i] = fmt.Sprintf("%x", b)[0]
-	}
-	return string(s[:8])
+func Shorten(str string, shortener func([]byte) string, length int) string {
+	short := shortener([]byte(str))
+	return short[:min(len(short), length)]
 }

@@ -24,7 +24,7 @@ func New(repository interfaces.IUrlRepository, cfg *config.Config, log *slog.Log
 }
 
 func (s *UrlService) StoreShortenUrl(url string) result.Result {
-	surl := utils.Shorten(url)
+	surl := utils.Shorten(url, utils.Md5Shortener, 8)
 	err := s.PutUrl(surl, url)
 	if err != nil {
 		s.log.Error(err.Error(), "domain", "service", "func", "StoreShortenUrl", "url", url)
