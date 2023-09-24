@@ -1,7 +1,6 @@
 package services
 
 import (
-	"errors"
 	"log/slog"
 	"os"
 	"testing"
@@ -11,6 +10,7 @@ import (
 	"github.com/en666ki/urlime/internal/config"
 	"github.com/en666ki/urlime/internal/shortener/interfaces/mocks"
 	"github.com/en666ki/urlime/internal/shortener/models"
+	"github.com/en666ki/urlime/internal/shortener/repositories"
 	"github.com/en666ki/urlime/internal/shortener/utils"
 	"github.com/en666ki/urlime/internal/shortener/viewmodels"
 )
@@ -40,7 +40,7 @@ func TestStoreShortenUrlError(t *testing.T) {
 
 	urlRepository.
 		On("PutUrl", utils.Shorten("testurl", utils.Md5Shortener, 8), "testurl").
-		Return(errors.New("woops!"))
+		Return(repositories.ErrorNotFound)
 
 	urlService := New(urlRepository, config.MustLoad(), log)
 
@@ -72,7 +72,7 @@ func TestReadUrlError(t *testing.T) {
 
 	urlRepository.
 		On("GetUrl", utils.Shorten("testurl", utils.Md5Shortener, 8)).
-		Return(models.Url{utils.Shorten("testurl", utils.Md5Shortener, 8), "testurl"}, errors.New("woops!"))
+		Return(models.Url{utils.Shorten("testurl", utils.Md5Shortener, 8), "testurl"}, repositories.ErrorKeyExists)
 
 	urlService := New(urlRepository, config.MustLoad(), log)
 
