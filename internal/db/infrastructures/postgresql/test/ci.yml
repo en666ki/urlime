@@ -8,7 +8,7 @@ db:
   host: "localhost"
   name: "local"
   port: 5432
-  table: "urls"
+  table: "urls_e2e"
   user: "local"
   password: "local_pwd"
 api:

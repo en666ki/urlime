@@ -20,7 +20,6 @@ import (
 type ShortenerTestSuite struct {
 	suite.Suite
 	router *chi.Mux
-	log    *slog.Logger
 }
 
 func TestShortenerTestSuite(t *testing.T) {
@@ -55,7 +54,6 @@ func (s *ShortenerTestSuite) TestE2E() {
 	surl := actualResult.Data.Surl
 
 	req = httptest.NewRequest("GET", "http://localhost:8080/unshort/"+surl, nil)
-	w = httptest.NewRecorder()
 
 	s.router.ServeHTTP(w, req)
 

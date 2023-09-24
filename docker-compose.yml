@@ -25,6 +25,7 @@ services:
     depends_on:
       - db
     image: arigaio/atlas:latest
+    restart: always
     volumes:
       - "./db:/tmp/database"
     command: >
