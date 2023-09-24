@@ -20,7 +20,9 @@ var log = slog.New(slog.NewTextHandler(os.Stderr, &slog.HandlerOptions{Level: sl
 func TestStoreShortenUrl(t *testing.T) {
 	urlRepository := new(mocks.MockUrlRepository)
 
-	urlRepository.On("PutUrl", utils.Shorten("testurl", utils.Md5Shortener, 8), "testurl").Return(nil)
+	urlRepository.
+		On("PutUrl", utils.Shorten("testurl", utils.Md5Shortener, 8), "testurl").
+		Return(nil)
 
 	urlService := New(urlRepository, config.MustLoad(), log)
 
@@ -36,7 +38,9 @@ func TestStoreShortenUrl(t *testing.T) {
 func TestStoreShortenUrlError(t *testing.T) {
 	urlRepository := new(mocks.MockUrlRepository)
 
-	urlRepository.On("PutUrl", utils.Shorten("testurl", utils.Md5Shortener, 8), "testurl").Return(errors.New("woops!"))
+	urlRepository.
+		On("PutUrl", utils.Shorten("testurl", utils.Md5Shortener, 8), "testurl").
+		Return(errors.New("woops!"))
 
 	urlService := New(urlRepository, config.MustLoad(), log)
 
@@ -48,7 +52,9 @@ func TestStoreShortenUrlError(t *testing.T) {
 func TestReadUrl(t *testing.T) {
 	urlRepository := new(mocks.MockUrlRepository)
 
-	urlRepository.On("GetUrl", utils.Shorten("testurl", utils.Md5Shortener, 8)).Return(models.Url{utils.Shorten("testurl", utils.Md5Shortener, 8), "testurl"}, nil)
+	urlRepository.
+		On("GetUrl", utils.Shorten("testurl", utils.Md5Shortener, 8)).
+		Return(models.Url{utils.Shorten("testurl", utils.Md5Shortener, 8), "testurl"}, nil)
 
 	urlService := New(urlRepository, config.MustLoad(), log)
 
@@ -64,7 +70,9 @@ func TestReadUrl(t *testing.T) {
 func TestReadUrlError(t *testing.T) {
 	urlRepository := new(mocks.MockUrlRepository)
 
-	urlRepository.On("GetUrl", utils.Shorten("testurl", utils.Md5Shortener, 8)).Return(models.Url{utils.Shorten("testurl", utils.Md5Shortener, 8), "testurl"}, errors.New("woops!"))
+	urlRepository.
+		On("GetUrl", utils.Shorten("testurl", utils.Md5Shortener, 8)).
+		Return(models.Url{utils.Shorten("testurl", utils.Md5Shortener, 8), "testurl"}, errors.New("woops!"))
 
 	urlService := New(urlRepository, config.MustLoad(), log)
 
