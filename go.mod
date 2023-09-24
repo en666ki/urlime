@@ -3,6 +3,7 @@ module github.com/en666ki/urlime
 go 1.21
 
 require (
+	github.com/dchest/uniuri v1.2.0
 	github.com/go-chi/chi v1.5.5
 	github.com/ilyakaznacheev/cleanenv v1.5.0
 	github.com/lib/pq v1.10.9

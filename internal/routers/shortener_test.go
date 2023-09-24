@@ -8,6 +8,7 @@ import (
 	"os"
 	"testing"
 
+	"github.com/dchest/uniuri"
 	"github.com/go-chi/chi"
 	"github.com/stretchr/testify/suite"
 
@@ -35,19 +36,20 @@ func (s *ShortenerTestSuite) SetupTest() {
 }
 
 func (s *ShortenerTestSuite) TestE2E() {
-	req := httptest.NewRequest("GET", "http://localhost:8080/shorten/asdfg", nil)
+	randomString := uniuri.New()
+	req := httptest.NewRequest("GET", "http://localhost:8080/shorten/"+randomString, nil)
 	w := httptest.NewRecorder()
 	s.router.ServeHTTP(w, req)
 
 	expectedData := viewmodels.UrlVM{}
-	expectedData.Url = "asdfg"
+	expectedData.Url = randomString
 
 	actualResult := result.Result{}
 
 	json.NewDecoder(w.Body).Decode(&actualResult)
 
 	s.Equal(expectedData.Url, actualResult.Data.Url)
-	s.NotEmpty(expectedData.Surl)
+	s.NotEmpty(actualResult.Data.Surl)
 	s.Equal(http.StatusCreated, actualResult.Code)
 
 	surl := actualResult.Data.Surl
@@ -58,7 +60,7 @@ func (s *ShortenerTestSuite) TestE2E() {
 	s.router.ServeHTTP(w, req)
 
 	expectedData = viewmodels.UrlVM{}
-	expectedData.Url = "asdfg"
+	expectedData.Url = randomString
 	expectedData.Surl = surl
 	expectedResult := result.Result{
 		Data:    &expectedData,
